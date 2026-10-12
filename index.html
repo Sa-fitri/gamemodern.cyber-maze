@@ -2,8 +2,8 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cyber Maze</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Cyber Maze: Escape Protocol</title>
 
 <style>
 * {
@@ -12,368 +12,745 @@
     padding: 0;
 }
 
+:root {
+    --cyan: #42ffe0;
+    --green: #8cff6b;
+    --purple: #bd7cff;
+    --bg: #050812;
+}
+
 body {
+    background:
+        radial-gradient(ellipse at top, #10242d, #050812 65%);
+    color: #e8ffff;
     font-family: Arial, sans-serif;
-    background: #030b12;
-    color: white;
     min-height: 100vh;
-    text-align: center;
     overflow-x: hidden;
-}
-
-header {
-    padding: 24px 10px 12px;
-}
-
-h1 {
-    font-size: clamp(34px, 8vw, 52px);
-    color: #38ffd5;
-    text-shadow: 0 0 12px #00ffc8;
-    letter-spacing: 3px;
-}
-
-.subtitle {
-    color: #9bbec9;
-    margin-top: 10px;
-    font-size: 13px;
-}
-
-.panel {
-    width: min(92%, 420px);
-    margin: 15px auto;
-    padding: 20px;
-    border: 1px solid #00ffc8;
-    border-radius: 16px;
-    background: #071720;
-    box-shadow: 0 0 18px #00ffc822;
+    padding: 15px 10px 25px;
 }
 
 button {
+    font: inherit;
     cursor: pointer;
-    border: 1px solid #00ffd0;
-    border-radius: 9px;
-    background: #092a32;
-    color: #55ffe0;
-    font-weight: bold;
-    padding: 12px 18px;
-    transition: 0.2s;
+    -webkit-tap-highlight-color: transparent;
 }
 
 button:active {
-    transform: scale(0.96);
-    background: #075044;
+    transform: scale(.95);
 }
 
-.menu button {
-    display: block;
-    width: 100%;
-    margin-top: 12px;
-    font-size: 15px;
+.app {
+    width: min(100%, 520px);
+    margin: auto;
+}
+
+.brand {
+    text-align: center;
+    margin: 8px 0 18px;
+}
+
+.brand small {
+    color: var(--green);
+    letter-spacing: 5px;
+    font-size: 10px;
+}
+
+.brand h1 {
+    font-size: clamp(30px, 8vw, 43px);
+    font-weight: 900;
+    letter-spacing: 2px;
+    margin: 7px 0;
+    color: var(--cyan);
+    text-shadow: 0 0 8px #42ffe088, 0 0 25px #00bfa588;
+}
+
+.brand p {
+    font-size: 11px;
+    color: #91a9bd;
+    letter-spacing: 2px;
+}
+
+.card {
+    border: 1px solid #42ffe044;
+    border-radius: 18px;
+    background: linear-gradient(145deg, #101c2b, #080d18);
+    box-shadow: 0 0 30px #00ffd00a;
+    padding: 18px;
 }
 
 .hidden {
     display: none !important;
 }
 
-.stats {
-    display: flex;
-    justify-content: space-around;
-    gap: 5px;
-    flex-wrap: wrap;
-    margin-bottom: 15px;
-    color: #54ffe0;
+.menu h2 {
+    color: white;
+    font-size: 23px;
+    margin-bottom: 8px;
+}
+
+.menu .desc {
+    color: #a3b7c9;
     font-size: 13px;
+    line-height: 1.8;
+    margin: 12px 0 20px;
 }
 
-#maze {
+.preview {
+    height: 155px;
+    border: 1px solid #42ffe044;
+    border-radius: 12px;
+    background:
+        radial-gradient(circle at 50% 50%, #103d42, #07121e 65%);
+    position: relative;
+    overflow: hidden;
     display: grid;
+    place-items: center;
+    margin: 17px 0;
+}
+
+.preview::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(#42ffe012 1px, transparent 1px),
+        linear-gradient(90deg, #42ffe012 1px, transparent 1px);
+    background-size: 24px 24px;
+}
+
+.preview .robot {
+    font-size: 54px;
+    position: relative;
+    filter: drop-shadow(0 0 15px #42ffe0);
+    animation: float 2s infinite ease-in-out;
+}
+
+.preview .orbit {
+    position: absolute;
+    width: 105px;
+    height: 105px;
+    border: 1px solid #42ffe077;
+    border-radius: 50%;
+    box-shadow: 0 0 20px #42ffe022;
+    animation: spin 8s linear infinite;
+}
+
+.preview .orbit::before,
+.preview .orbit::after {
+    content: "✦";
+    color: var(--green);
+    position: absolute;
+    font-size: 18px;
+}
+
+.preview .orbit::before {
+    top: -10px;
+    left: 45px;
+}
+
+.preview .orbit::after {
+    bottom: -10px;
+    right: 15px;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-9px); }
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.btn {
     width: 100%;
-    aspect-ratio: 1;
-    border: 2px solid #00ffc8;
-    box-shadow: 0 0 18px #00ffc844;
-    background: #041018;
+    padding: 14px;
+    border-radius: 10px;
+    border: 1px solid var(--cyan);
+    color: var(--cyan);
+    background: #09232b;
+    font-weight: bold;
+    margin-top: 10px;
+    letter-spacing: 1px;
 }
 
-.cell {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 0;
-    min-height: 0;
-    font-size: clamp(9px, 3.5vw, 18px);
+.btn.primary {
+    background: linear-gradient(100deg, #35f6c6, #a3ff83);
+    border: none;
+    color: #04120f;
+    box-shadow: 0 0 20px #42ffe033;
 }
 
-.wall {
-    background: #123b48;
-    box-shadow: inset 0 0 5px #00d9ff33;
+.btn.secondary {
+    border-color: #a777ff88;
+    color: #d4b4ff;
+    background: #21172f;
 }
 
-.floor {
-    background: #06131c;
+.features {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-top: 17px;
 }
 
-.player {
-    color: #ffffff;
-    background: #07534f;
-    text-shadow: 0 0 8px #00ffe1;
+.feature {
+    text-align: center;
+    background: #0a1420;
+    border: 1px solid #ffffff0d;
+    border-radius: 10px;
+    padding: 12px 4px;
 }
 
-.key {
-    color: #ffe56b;
-    text-shadow: 0 0 8px #ffcf33;
+.feature div {
+    font-size: 22px;
 }
 
-.exit {
-    color: #51ff86;
-    text-shadow: 0 0 10px #00ff55;
+.feature small {
+    display: block;
+    color: #a4b7c9;
+    font-size: 10px;
+    margin-top: 7px;
 }
 
-.trap {
-    color: #ff658a;
-    text-shadow: 0 0 8px #ff285b;
+.howto {
+    color: #afc3d5;
+    font-size: 13px;
+    line-height: 1.9;
+    text-align: left;
+}
+
+.howto b {
+    color: var(--cyan);
+}
+
+.game-hud {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 7px;
+    margin-bottom: 12px;
+}
+
+.hud-box {
+    background: #091521;
+    border: 1px solid #42ffe022;
+    border-radius: 9px;
+    padding: 10px 4px;
+    text-align: center;
+}
+
+.hud-box small {
+    display: block;
+    color: #829caf;
+    font-size: 9px;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+}
+
+.hud-box strong {
+    font-size: 15px;
+    color: var(--cyan);
+}
+
+#hearts {
+    color: #ff6388;
+    letter-spacing: 2px;
+}
+
+.game-title {
+    font-size: 12px;
+    color: var(--green);
+    letter-spacing: 2px;
+    margin: 5px 0 12px;
+}
+
+.canvas-wrap {
+    width: 100%;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid #42ffe0;
+    box-shadow: 0 0 20px #42ffe022;
+    background: #050b14;
+    position: relative;
+}
+
+canvas {
+    width: 100%;
+    display: block;
+    image-rendering: auto;
+    touch-action: none;
+}
+
+#notice {
+    text-align: center;
+    min-height: 35px;
+    padding: 12px 3px 5px;
+    font-size: 12px;
+    color: var(--cyan);
 }
 
 .controls {
     display: grid;
-    grid-template-columns: repeat(3, 58px);
+    grid-template-columns: repeat(3, 62px);
     justify-content: center;
-    gap: 8px;
-    margin: 18px 0 10px;
+    gap: 7px;
+    margin: 12px auto;
 }
 
-.controls button {
-    height: 48px;
-    padding: 0;
-    font-size: 20px;
+.control {
+    width: 62px;
+    height: 52px;
+    border: 1px solid #42ffe066;
+    border-radius: 12px;
+    background: linear-gradient(145deg, #112c39, #08151f);
+    color: var(--cyan);
+    font-size: 22px;
+    box-shadow: inset 0 0 12px #42ffe008;
     touch-action: manipulation;
 }
 
-.empty {
+.control.empty {
     visibility: hidden;
 }
 
-.message {
-    min-height: 22px;
-    margin: 12px 0;
-    color: #9fffe9;
-    font-size: 13px;
+.action-row {
+    display: flex;
+    gap: 8px;
 }
 
-.small {
-    color: #87a8b5;
-    font-size: 12px;
-    line-height: 1.7;
+.action-row .btn {
+    margin: 0;
+    padding: 12px 5px;
+    font-size: 11px;
+}
+
+.tiny {
+    text-align: center;
+    font-size: 10px;
+    line-height: 1.8;
+    color: #71899b;
+    margin-top: 12px;
+}
+
+#overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 20;
+    background: #02050de8;
+    backdrop-filter: blur(7px);
+    display: grid;
+    place-items: center;
+    padding: 20px;
+}
+
+.modal {
+    width: min(100%, 370px);
+    text-align: center;
+    padding: 28px 22px;
+    background: #0b1724;
+    border: 1px solid #42ffe0;
+    border-radius: 18px;
+    box-shadow: 0 0 35px #42ffe022;
+}
+
+.modal .big {
+    font-size: 52px;
+    margin-bottom: 15px;
+}
+
+.modal h2 {
+    color: var(--cyan);
+    font-size: 23px;
+    margin-bottom: 12px;
+}
+
+.modal p {
+    color: #a7bdcf;
+    font-size: 13px;
+    line-height: 1.8;
+    margin-bottom: 12px;
 }
 
 footer {
-    padding: 15px;
-    color: #648692;
-    font-size: 11px;
+    text-align: center;
+    margin: 20px 0 0;
+    color: #587181;
+    font-size: 10px;
+    letter-spacing: 1px;
 }
 </style>
 </head>
 
 <body>
 
-<header>
-    <h1>CYBER MAZE</h1>
-    <p class="subtitle">FIND THE EXIT • ESCAPE THE MAZE</p>
-</header>
+<div class="app">
 
-<!-- MENU UTAMA -->
-<section id="home" class="panel menu">
-    <h2>🚪 Misi Pelarian</h2>
-    <p class="small" style="margin-top:12px">
-        Temukan kunci, hindari jebakan, dan temukan pintu keluar
-        untuk menyelesaikan setiap level!
-    </p>
+    <header class="brand">
+        <small>NEON ARCADE / 2089</small>
+        <h1>CYBER MAZE</h1>
+        <p>ESCAPE PROTOCOL</p>
+    </header>
 
-    <button onclick="startGame()">▶ MULAI BERMAIN</button>
-    <button onclick="showInstructions()">ⓘ CARA BERMAIN</button>
-    <button onclick="showBestScore()">🏆 SKOR TERTINGGI</button>
+    <section id="home" class="card menu">
+        <h2>Welcome, Runner.</h2>
 
-    <p class="small" style="margin-top:15px">
-        Siapkan strategi dan temukan jalan keluarnya!
-    </p>
-</section>
+        <p class="desc">
+            Sistem keamanan telah aktif. Temukan kristal energi,
+            ambil kunci akses, hindari robot penjaga, dan kabur
+            dari fasilitas sebelum waktu habis.
+        </p>
 
-<!-- AREA PERMAINAN -->
-<section id="game" class="panel hidden">
-    <div class="stats">
-        <span>⭐ Skor: <b id="score">0</b></span>
-        <span>🔑 <b id="keys">0</b>/1</span>
-        <span>⏱️ <b id="time">0</b> dtk</span>
-        <span>LEVEL <b id="level">1</b></span>
+        <div class="preview">
+            <div class="orbit"></div>
+            <div class="robot">🤖</div>
+        </div>
+
+        <button class="btn primary" onclick="startGame()">
+            ▶ MULAI MISI
+        </button>
+
+        <button class="btn secondary" onclick="instructions()">
+            ⓘ CARA BERMAIN
+        </button>
+
+        <div class="features">
+            <div class="feature">
+                <div>💎</div>
+                <small>ENERGY CRYSTAL</small>
+            </div>
+            <div class="feature">
+                <div>🤖</div>
+                <small>ROBOT GUARD</small>
+            </div>
+            <div class="feature">
+                <div>🔐</div>
+                <small>ESCAPE MISSION</small>
+            </div>
+        </div>
+
+        <p class="tiny">
+            PERSONAL BEST: <b id="bestHome">0</b> POINTS
+        </p>
+    </section>
+
+    <section id="game" class="card hidden">
+
+        <div class="game-hud">
+            <div class="hud-box">
+                <small>SCORE</small>
+                <strong id="score">0</strong>
+            </div>
+
+            <div class="hud-box">
+                <small>TIME</small>
+                <strong id="time">90</strong>
+            </div>
+
+            <div class="hud-box">
+                <small>LIVES</small>
+                <strong id="hearts">♥♥♥</strong>
+            </div>
+        </div>
+
+        <div class="game-title">
+            SECTOR <span id="level">01</span> // ESCAPE
+        </div>
+
+        <div class="canvas-wrap">
+            <canvas id="board"></canvas>
+        </div>
+
+        <p id="notice">Cari kristal dan temukan pintu keluar!</p>
+
+        <div class="controls">
+            <button class="control empty"></button>
+            <button class="control" onclick="move(0,-1)">▲</button>
+            <button class="control empty"></button>
+
+            <button class="control" onclick="move(-1,0)">◀</button>
+            <button class="control" onclick="move(0,1)">▼</button>
+            <button class="control" onclick="move(1,0)">▶</button>
+        </div>
+
+        <div class="action-row">
+            <button class="btn" onclick="pauseGame()">Ⅱ JEDA</button>
+            <button class="btn" onclick="backHome()">⌂ MENU</button>
+        </div>
+
+        <p class="tiny">
+            Gunakan tombol arah. Hindari robot dan kumpulkan kristal.
+        </p>
+
+    </section>
+
+    <footer>
+        CYBER MAZE © 2026 • ESCAPE THE IMPOSSIBLE
+    </footer>
+
+</div>
+
+<div id="overlay" class="hidden">
+    <div class="modal">
+        <div class="big" id="modalIcon">⚡</div>
+        <h2 id="modalTitle">SYSTEM PAUSED</h2>
+        <p id="modalText"></p>
+        <button id="modalMain" class="btn primary">LANJUTKAN</button>
+        <button id="modalAlt" class="btn secondary">MENU UTAMA</button>
     </div>
-
-    <div id="maze"></div>
-
-    <p id="message" class="message">
-        Cari kunci untuk membuka pintu!
-    </p>
-
-    <div class="controls">
-        <button class="empty"> </button>
-        <button onclick="move(0,-1)">▲</button>
-        <button class="empty"> </button>
-
-        <button onclick="move(-1,0)">◀</button>
-        <button onclick="move(0,1)">▼</button>
-        <button onclick="move(1,0)">▶</button>
-    </div>
-
-    <button onclick="pauseGame()">Ⅱ JEDA</button>
-    <button onclick="backHome()">⌂ MENU</button>
-
-    <p class="small" style="margin-top:12px">
-        Kamu juga bisa memakai tombol panah pada keyboard.
-    </p>
-</section>
-
-<!-- JENDELA INFORMASI -->
-<section id="dialog" class="panel hidden">
-    <h2 id="dialogTitle">Informasi</h2>
-    <p id="dialogText" class="small" style="margin:18px 0"></p>
-    <button onclick="closeDialog()">KEMBALI</button>
-</section>
-
-<footer>
-    CYBER MAZE © 2026 • HTML · CSS · JAVASCRIPT
-</footer>
+</div>
 
 <script>
-const levels = [
+const canvas = document.getElementById("board");
+const ctx = canvas.getContext("2d");
+
+const TILE = 32;
+const COLS = 15;
+const ROWS = 11;
+
+canvas.width = COLS * TILE;
+canvas.height = ROWS * TILE;
+
+const levelMaps = [
 [
-"#########",
-"#P..#..E#",
-"#.#.#.#.#",
-"#.#...#.#",
-"#.###.#.#",
-"#...K...#",
-"###.#.#.#",
-"#.......#",
-"#########"
+"###############",
+"#P....#.......#",
+"###.#.#.#####.#",
+"#...#...#.....#",
+"#.#####.#.###.#",
+"#.....#...#...#",
+"#.###.###.#.###",
+"#...#.....#...#",
+"###.#####.###.#",
+"#K..........E.#",
+"###############"
 ],
 [
-"#########",
-"#P#.....#",
-"#.#.###.#",
-"#...#...#",
-"###.#.#.#",
-"#K..T...#",
-"#.#####.#",
-"#......E#",
-"#########"
+"###############",
+"#P....#.......#",
+"#.##..#.#####.#",
+"#..#..#...#...#",
+"##.#.###..#.#.#",
+"#..#.....##.#.#",
+"#.####.#....#.#",
+"#......#.##...#",
+"#.######.###..#",
+"#K.........E..#",
+"###############"
 ],
 [
-"#########",
-"#P......#",
-"#.#####.#",
-"#...T...#",
-"###.#.###",
-"#K..#...#",
-"#.###.#.#",
-"#......E#",
-"#########"
+"###############",
+"#P....#.......#",
+"#.##..#.###.#.#",
+"#..#..#...#.#.#",
+"##.#.###..#...#",
+"#..#.....##.#.#",
+"#.####.#....#.#",
+"#......#.##...#",
+"###.####.###..#",
+"#K..........E.#",
+"###############"
 ]
 ];
 
-let grid = [];
+let map = [];
 let player = {x:1,y:1};
-let keyFound = false;
+let enemies = [];
+let crystals = [];
+let traps = [];
+let powerups = [];
+
+let levelIndex = 0;
 let score = 0;
-let level = 0;
-let seconds = 0;
-let timer = null;
+let lives = 3;
+let timeLeft = 90;
+let keyFound = false;
 let playing = false;
 let paused = false;
+let invincibleUntil = 0;
+let powerUntil = 0;
+let lastEnemyMove = 0;
+let lastTime = 0;
+let animationId = null;
+let timerId = null;
+let particles = [];
+let messageTimer = null;
+
 let best = Number(localStorage.getItem("cyberMazeBest") || 0);
 
-function show(id) {
-    ["home","game","dialog"].forEach(name => {
-        document.getElementById(name).classList.add("hidden");
-    });
+document.getElementById("bestHome").textContent = best;
+
+function notify(text) {
+    document.getElementById("notice").textContent = text;
+}
+
+function showScreen(id) {
+    document.getElementById("home").classList.add("hidden");
+    document.getElementById("game").classList.add("hidden");
     document.getElementById(id).classList.remove("hidden");
 }
 
 function startGame() {
-    clearInterval(timer);
+    cancelAnimationFrame(animationId);
+    clearInterval(timerId);
+
     score = 0;
-    level = 0;
-    seconds = 0;
+    lives = 3;
+    timeLeft = 90;
+    levelIndex = 0;
     playing = true;
     paused = false;
 
     loadLevel();
+    showScreen("game");
+    updateHUD();
 
-    timer = setInterval(() => {
-        if (playing && !paused) {
-            seconds++;
-            document.getElementById("time").textContent = seconds;
+    timerId = setInterval(() => {
+        if (!playing || paused) return;
+
+        timeLeft--;
+        updateHUD();
+
+        if (timeLeft <= 0) {
+            endGame(false, "WAKTU HABIS!");
         }
     }, 1000);
+
+    lastTime = performance.now();
+    animationId = requestAnimationFrame(loop);
 }
 
 function loadLevel() {
-    grid = levels[level].map(row => row.split(""));
-    keyFound = false;
+    map = levelMaps[levelIndex].map(row => row.split(""));
 
-    for (let y = 0; y < grid.length; y++) {
-        for (let x = 0; x < grid[y].length; x++) {
-            if (grid[y][x] === "P") {
+    player = {x:1,y:1};
+    enemies = [];
+    crystals = [];
+    traps = [];
+    powerups = [];
+    particles = [];
+    keyFound = false;
+    invincibleUntil = 0;
+    powerUntil = 0;
+
+    const reserved = new Set([
+        "1,1",
+        "1,9",
+        "12,9",
+        "13,9"
+    ]);
+
+    for (let y = 1; y < ROWS - 1; y++) {
+        for (let x = 1; x < COLS - 1; x++) {
+            if (map[y][x] === "P") {
                 player = {x,y};
-                grid[y][x] = ".";
+                map[y][x] = ".";
+            }
+
+            if (map[y][x] === "K") {
+                map[y][x] = ".";
             }
         }
     }
 
-    show("game");
-    document.getElementById("level").textContent = level + 1;
-    document.getElementById("message").textContent =
-        "Cari kunci 🔑 untuk membuka pintu!";
-    render();
-    updateStats();
+    const floorCells = [];
+
+    for (let y = 1; y < ROWS - 1; y++) {
+        for (let x = 1; x < COLS - 1; x++) {
+            if (map[y][x] === "." &&
+                !(x === player.x && y === player.y)) {
+                floorCells.push({x,y});
+            }
+        }
+    }
+
+    // Pilih posisi aman yang bisa dicapai pemain.
+    const reachable = getReachable(player.x, player.y);
+
+    const candidates = floorCells.filter(p =>
+        reachable.some(r => r.x === p.x && r.y === p.y) &&
+        Math.abs(p.x - player.x) + Math.abs(p.y - player.y) > 3 &&
+        !(p.x === 13 && p.y === 9)
+    );
+
+    shuffle(candidates);
+
+    // Kristal
+    crystals = candidates.slice(0, 7).map(p => ({
+        ...p,
+        phase: Math.random() * Math.PI * 2
+    }));
+
+    // Musuh ditempatkan pada lantai yang terjangkau.
+    const enemySpots = candidates.slice(7, 9);
+
+    enemies = enemySpots.map(p => ({
+        x:p.x,
+        y:p.y,
+        lastMove:0,
+        phase:Math.random() * 6,
+        alive:true
+    }));
+
+    // Jebakan
+    traps = candidates.slice(9, 12).map(p => ({...p}));
+
+    // Power-up
+    powerups = candidates.slice(12, 13).map(p => ({
+        ...p,
+        phase:0
+    }));
+
+    document.getElementById("level").textContent =
+        String(levelIndex + 1).padStart(2,"0");
+
+    notify("💎 Cari kristal, ambil kunci, lalu kabur!");
+
+    draw();
 }
 
-function render() {
-    const maze = document.getElementById("maze");
-    const rows = grid.length;
-    const cols = grid[0].length;
+function shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+}
 
-    maze.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
-    maze.innerHTML = "";
+function getReachable(sx, sy) {
+    const result = [];
+    const queue = [{x:sx,y:sy}];
+    const seen = new Set([`${sx},${sy}`]);
 
-    for (let y = 0; y < rows; y++) {
-        for (let x = 0; x < cols; x++) {
-            const cell = document.createElement("div");
-            const value = grid[y][x];
+    while (queue.length) {
+        const p = queue.shift();
+        result.push(p);
 
-            cell.className = "cell";
+        for (const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]) {
+            const x = p.x + dx;
+            const y = p.y + dy;
+            const id = `${x},${y}`;
 
-            if (value === "#") {
-                cell.classList.add("wall");
-                cell.textContent = "";
-            } else {
-                cell.classList.add("floor");
-
-                if (x === player.x && y === player.y) {
-                    cell.classList.add("player");
-                    cell.textContent = "🤖";
-                } else if (value === "K") {
-                    cell.classList.add("key");
-                    cell.textContent = "🔑";
-                } else if (value === "E") {
-                    cell.classList.add("exit");
-                    cell.textContent = "🚪";
-                } else if (value === "T") {
-                    cell.classList.add("trap");
-                    cell.textContent = "⚠️";
-                }
+            if (
+                x >= 0 && x < COLS &&
+                y >= 0 && y < ROWS &&
+                map[y][x] !== "#" &&
+                !seen.has(id)
+            ) {
+                seen.add(id);
+                queue.push({x,y});
             }
-
-            maze.appendChild(cell);
         }
     }
+
+    return result;
+}
+
+function updateHUD() {
+    document.getElementById("score").textContent = score;
+    document.getElementById("time").textContent = timeLeft;
+
+    document.getElementById("hearts").textContent =
+        "♥".repeat(Math.max(0,lives)) +
+        "♡".repeat(Math.max(0,3-lives));
 }
 
 function move(dx,dy) {
@@ -383,161 +760,525 @@ function move(dx,dy) {
     const ny = player.y + dy;
 
     if (
-        ny < 0 || ny >= grid.length ||
-        nx < 0 || nx >= grid[ny].length
+        nx < 0 || nx >= COLS ||
+        ny < 0 || ny >= ROWS ||
+        map[ny][nx] === "#"
     ) return;
 
-    const target = grid[ny][nx];
-
-    if (target === "#") return;
-
-    if (target === "E" && !keyFound) {
-        document.getElementById("message").textContent =
-            "🔒 Pintu terkunci! Cari kunci terlebih dahulu.";
+    // Pintu keluar baru bisa dipakai setelah mendapat kunci.
+    if (map[ny][nx] === "E" && !keyFound) {
+        notify("🔒 PINTU TERKUNCI! Cari kunci akses.");
         return;
-    }
-
-    if (target === "K") {
-        keyFound = true;
-        score += 100;
-        document.getElementById("message").textContent =
-            "🔑 Kunci ditemukan! Sekarang cari pintu keluar.";
-    } else if (target === "T") {
-        score = Math.max(0, score - 20);
-        document.getElementById("message").textContent =
-            "⚠️ Terkena jebakan! Skor berkurang 20.";
-    } else {
-        score += 1;
-        document.getElementById("message").textContent =
-            "Terus cari jalan menuju pintu keluar!";
     }
 
     player.x = nx;
     player.y = ny;
 
-    if (target === "E" && keyFound) {
-        score += 100;
-        updateStats();
+    const crystalIndex = crystals.findIndex(c =>
+        c.x === nx && c.y === ny
+    );
 
-        if (level < levels.length - 1) {
-            level++;
-            document.getElementById("message").textContent =
-                "🎉 Level selesai! Bersiap ke level berikutnya.";
-            setTimeout(() => {
-                    if (playing && !paused) loadLevel();
-            }, 700);
+    if (crystalIndex !== -1) {
+        crystals.splice(crystalIndex,1);
+        score += 50;
+        burst(nx,ny,"#4affde");
+        notify("💎 +50 ENERGY POINTS!");
+    }
+
+    const powerIndex = powerups.findIndex(p =>
+        p.x === nx && p.y === ny
+    );
+
+    if (powerIndex !== -1) {
+        powerups.splice(powerIndex,1);
+        powerUntil = performance.now() + 5000;
+        score += 25;
+        burst(nx,ny,"#bd7cff");
+        notify("⚡ ENERGY SHIELD AKTIF!");
+    }
+
+    if (map[ny][nx] === "K") {
+        keyFound = true;
+        map[ny][nx] = ".";
+        score += 100;
+        burst(nx,ny,"#ffe77b");
+        notify("🔑 KUNCI DIDAPATKAN! MENUJU PINTU KELUAR!");
+    }
+
+    const trap = traps.find(t => t.x === nx && t.y === ny);
+
+    if (trap && performance.now() > powerUntil) {
+        hitPlayer("⚠️ KAMU TERKENA JEBakan!");
+    }
+
+    if (enemies.some(e => e.alive && e.x === nx && e.y === ny)) {
+        if (performance.now() > powerUntil) {
+            hitPlayer("🤖 ROBOT MENANGKAPMU!");
         } else {
-            winGame();
+            score += 20;
+            burst(nx,ny,"#bd7cff");
+            enemies.forEach(e => {
+                if (e.x === nx && e.y === ny) e.alive = false;
+            });
+            notify("⚡ ROBOT BERHASIL DILUMPUHKAN!");
         }
+    }
+
+    if (map[ny][nx] === "E" && keyFound) {
+        score += 200;
+        burst(nx,ny,"#8cff6b");
+
+        if (levelIndex < levelMaps.length - 1) {
+            levelIndex++;
+            notify("🎉 SEKTOR BERHASIL DITEMBUS!");
+            draw();
+
+            setTimeout(() => {
+                if (playing && !paused) {
+                    loadLevel();
+                    updateHUD();
+                }
+            },500);
+        } else {
+            endGame(true,"SEMUA SEKTOR BERHASIL DITEMBUS!");
+        }
+    }
+
+    updateHUD();
+    draw();
+}
+
+function hitPlayer(text) {
+    if (performance.now() < invincibleUntil) return;
+
+    lives--;
+    invincibleUntil = performance.now() + 1800;
+    burst(player.x,player.y,"#ff5577");
+
+    if (lives <= 0) {
+        updateHUD();
+        endGame(false,"SEMUA NYAWA HABIS!");
         return;
     }
 
-    updateStats();
-    render();
+    notify(text + " -1 NYAWA!");
+
+    // Pindahkan pemain ke titik awal yang aman.
+    player = {x:1,y:1};
+
+    updateHUD();
 }
 
-function updateStats() {
-    document.getElementById("score").textContent = score;
-    document.getElementById("keys").textContent = keyFound ? 1 : 0;
-    document.getElementById("level").textContent = level + 1;
+function enemyStep(enemy) {
+    if (!enemy.alive) return;
+
+    const start = {x:enemy.x,y:enemy.y};
+    const queue = [start];
+    const cameFrom = new Map();
+    const visited = new Set([`${start.x},${start.y}`]);
+    let found = false;
+
+    while (queue.length) {
+        const p = queue.shift();
+
+        if (p.x === player.x && p.y === player.y) {
+            found = true;
+            break;
+        }
+
+        const dirs = shuffleCopy([
+            [1,0],[-1,0],[0,1],[0,-1]
+        ]);
+
+        for (const [dx,dy] of dirs) {
+            const x = p.x + dx;
+            const y = p.y + dy;
+            const id = `${x},${y}`;
+
+            if (
+                x < 0 || x >= COLS ||
+                y < 0 || y >= ROWS ||
+                map[y][x] === "#" ||
+                visited.has(id)
+            ) continue;
+
+            visited.add(id);
+            cameFrom.set(id,p);
+            queue.push({x,y});
+        }
+    }
+
+    if (!found) return;
+
+    let current = {x:player.x,y:player.y};
+
+    while (
+        cameFrom.has(`${current.x},${current.y}`) &&
+        !(cameFrom.get(`${current.x},${current.y}`).x === start.x &&
+          cameFrom.get(`${current.x},${current.y}`).y === start.y)
+    ) {
+        current = cameFrom.get(`${current.x},${current.y}`);
+    }
+
+    const parent = cameFrom.get(`${current.x},${current.y}`);
+
+    if (parent && parent.x === start.x && parent.y === start.y) {
+        enemy.x = current.x;
+        enemy.y = current.y;
+    }
+
+    if (enemy.x === player.x && enemy.y === player.y) {
+        if (performance.now() > powerUntil) {
+            hitPlayer("🤖 ROBOT MENANGKAPMU!");
+        } else {
+            enemy.alive = false;
+            score += 20;
+            notify("⚡ ROBOT BERHASIL DILUMPUHKAN!");
+        }
+    }
+}
+
+function shuffleCopy(array) {
+    return array.sort(() => Math.random() - 0.5);
+}
+
+function loop(now) {
+    if (!playing) return;
+
+    if (!paused) {
+        for (const enemy of enemies) {
+            const interval = performance.now() < powerUntil ? 850 : 550;
+
+            if (now - enemy.lastMove > interval) {
+                enemy.lastMove = now;
+                enemyStep(enemy);
+            }
+        }
+
+        draw(now);
+    }
+
+    animationId = requestAnimationFrame(loop);
+}
+
+function draw(now = performance.now()) {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    ctx.fillStyle = "#050b15";
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+
+    // Latar grid futuristik.
+    ctx.strokeStyle = "#16303c";
+    ctx.lineWidth = 0.5;
+
+    for (let x = 0; x <= COLS; x++) {
+        ctx.beginPath();
+        ctx.moveTo(x*TILE,0);
+        ctx.lineTo(x*TILE,canvas.height);
+        ctx.stroke();
+    }
+
+    for (let y = 0; y <= ROWS; y++) {
+        ctx.beginPath();
+        ctx.moveTo(0,y*TILE);
+        ctx.lineTo(canvas.width,y*TILE);
+        ctx.stroke();
+    }
+
+    // Labirin.
+    for (let y = 0; y < ROWS; y++) {
+        for (let x = 0; x < COLS; x++) {
+            const px = x*TILE;
+            const py = y*TILE;
+
+            if (map[y][x] === "#") {
+                ctx.fillStyle = "#112b3b";
+                ctx.fillRect(px+1,py+1,TILE-2,TILE-2);
+
+                ctx.strokeStyle = "#1d8291";
+                ctx.lineWidth = 1;
+                ctx.strokeRect(px+3,py+3,TILE-6,TILE-6);
+
+                ctx.fillStyle = "#1e5060";
+                ctx.fillRect(px+5,py+5,TILE-10,2);
+            }
+
+            if (map[y][x] === "E") {
+                ctx.save();
+                ctx.shadowBlur = 15;
+                ctx.shadowColor = keyFound ? "#8cff6b" : "#ff5577";
+                ctx.strokeStyle = keyFound ? "#8cff6b" : "#ff5577";
+                ctx.lineWidth = 2;
+                ctx.strokeRect(px+6,py+4,TILE-12,TILE-8);
+
+                ctx.fillStyle = keyFound ? "#8cff6b" : "#ff5577";
+                ctx.font = "bold 18px Arial";
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+                ctx.fillText("⇧",px+TILE/2,py+TILE/2);
+                ctx.restore();
+            }
+
+            if (map[y][x] === "K") {
+                ctx.save();
+                ctx.shadowBlur = 12;
+                ctx.shadowColor = "#ffe77b";
+                ctx.fillStyle = "#ffe77b";
+                ctx.font = "20px Arial";
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+                ctx.fillText("⚿",px+TILE/2,py+TILE/2);
+                ctx.restore();
+            }
+        }
+    }
+
+    // Kristal energi.
+    for (const c of crystals) {
+        const pulse = Math.sin(now/180 + c.phase)*3;
+
+        ctx.save();
+        ctx.translate(c.x*TILE+TILE/2,c.y*TILE+TILE/2);
+        ctx.rotate(Math.PI/4);
+        ctx.shadowBlur = 15;
+        ctx.shadowColor = "#42ffe0";
+        ctx.fillStyle = "#42ffe0";
+        ctx.fillRect(-6-pulse/3,-6-pulse/3,12+pulse,12+pulse);
+        ctx.fillStyle = "#c7fff6";
+        ctx.fillRect(-2,-2,4,4);
+        ctx.restore();
+    }
+
+    // Jebakan.
+    for (const t of traps) {
+        ctx.save();
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = "#ff527b";
+        ctx.fillStyle = "#ff527b";
+        ctx.font = "21px Arial";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText("✹",t.x*TILE+TILE/2,t.y*TILE+TILE/2);
+        ctx.restore();
+    }
+
+    // Power-up.
+    for (const p of powerups) {
+        ctx.save();
+        ctx.shadowBlur = 16;
+        ctx.shadowColor = "#bd7cff";
+        ctx.fillStyle = "#bd7cff";
+        ctx.beginPath();
+        ctx.arc(
+            p.x*TILE+TILE/2,
+            p.y*TILE+TILE/2,
+            8+Math.sin(now/140)*2,
+            0,Math.PI*2
+        );
+        ctx.fill();
+
+        ctx.fillStyle = "white";
+        ctx.font = "bold 13px Arial";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText("⚡",p.x*TILE+TILE/2,p.y*TILE+TILE/2);
+        ctx.restore();
+    }
+
+    // Partikel.
+    particles = particles.filter(p => p.life > 0);
+
+    for (const p of particles) {
+        ctx.globalAlpha = Math.max(0,p.life/30);
+        ctx.fillStyle = p.color;
+        ctx.fillRect(p.x,p.y,3,3);
+        p.x += p.vx;
+        p.y += p.vy;
+        p.life--;
+    }
+
+    ctx.globalAlpha = 1;
+
+    // Robot penjaga.
+    for (const e of enemies) {
+        if (!e.alive) continue;
+
+        ctx.save();
+        ctx.shadowBlur = 15;
+        ctx.shadowColor = "#ff4c78";
+        ctx.fillStyle = "#ff4c78";
+
+        const ex = e.x*TILE+TILE/2;
+        const ey = e.y*TILE+TILE/2;
+
+        ctx.beginPath();
+        ctx.roundRect(ex-10,ey-9,20,19,5);
+        ctx.fill();
+
+        ctx.fillStyle = "#270b1b";
+        ctx.fillRect(ex-6,ey-3,4,4);
+        ctx.fillRect(ex+2,ey-3,4,4);
+
+        ctx.strokeStyle = "#ff91b0";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(ex-5,ey+5);
+        ctx.lineTo(ex+5,ey+5);
+        ctx.stroke();
+
+        ctx.restore();
+    }
+
+    // Pemain.
+    ctx.save();
+
+    const blink = now < invincibleUntil &&
+        Math.floor(now/100)%2 === 0;
+
+    if (!blink) {
+        const px = player.x*TILE+TILE/2;
+        const py = player.y*TILE+TILE/2;
+
+        ctx.shadowBlur = 18;
+        ctx.shadowColor = now < powerUntil ? "#bd7cff" : "#42ffe0";
+
+        ctx.fillStyle = now < powerUntil ? "#bd7cff" : "#42ffe0";
+
+        ctx.beginPath();
+        ctx.arc(px,py,10,0,Math.PI*2);
+        ctx.fill();
+
+        ctx.fillStyle = "#06141a";
+        ctx.beginPath();
+        ctx.arc(px-3,py-2,2,0,Math.PI*2);
+        ctx.arc(px+3,py-2,2,0,Math.PI*2);
+        ctx.fill();
+
+        ctx.fillStyle = "#dffff9";
+        ctx.fillRect(px-4,py+3,8,2);
+    }
+
+    ctx.restore();
+}
+
+function burst(x,y,color) {
+    for (let i = 0; i < 16; i++) {
+        const angle = Math.random()*Math.PI*2;
+        const speed = 0.5+Math.random()*2;
+
+        particles.push({
+            x:x*TILE+TILE/2,
+            y:y*TILE+TILE/2,
+            vx:Math.cos(angle)*speed,
+            vy:Math.sin(angle)*speed,
+            life:15+Math.random()*15,
+            color
+        });
+    }
 }
 
 function pauseGame() {
     if (!playing) return;
 
-    paused = !paused;
+    paused = true;
 
-    document.getElementById("dialogTitle").textContent =
-        paused ? "⏸️ GAME DIJEDA" : "▶ PERMAINAN";
-    document.getElementById("dialogText").textContent =
-        paused ? "Permainan dihentikan sementara." :
-        "Permainan dilanjutkan.";
-
-    show(paused ? "dialog" : "game");
+    modal(
+        "Ⅱ",
+        "SYSTEM PAUSED",
+        "Permainan dijeda. Siap melanjutkan misi?",
+        "LANJUTKAN",
+        resumeGame
+    );
 }
 
-function winGame() {
+function resumeGame() {
+    paused = false;
+    document.getElementById("overlay").classList.add("hidden");
+}
+
+function instructions() {
+    modal(
+        "🎮",
+        "CARA BERMAIN",
+        "Gunakan tombol arah untuk bergerak. Kumpulkan kristal 💎 untuk menambah skor, ambil kunci 🔑, hindari robot 🤖 dan jebakan ✹, lalu cari pintu keluar. Power-up ⚡ dapat melindungimu sementara. Selesaikan 3 sektor untuk menang!",
+        "MENGERTI",
+        () => document.getElementById("overlay").classList.add("hidden")
+    );
+}
+
+function modal(icon,title,text,button,action) {
+    document.getElementById("modalIcon").textContent = icon;
+    document.getElementById("modalTitle").textContent = title;
+    document.getElementById("modalText").textContent = text;
+
+    const main = document.getElementById("modalMain");
+    const alt = document.getElementById("modalAlt");
+
+    main.textContent = button;
+    main.onclick = action;
+
+    alt.textContent = "MENU UTAMA";
+    alt.onclick = backHome;
+
+    document.getElementById("overlay").classList.remove("hidden");
+}
+
+function endGame(won,title) {
+    if (!playing) return;
+
     playing = false;
-    clearInterval(timer);
+    paused = true;
+    clearInterval(timerId);
+
+    cancelAnimationFrame(animationId);
 
     if (score > best) {
         best = score;
-        localStorage.setItem("cyberMazeBest", best);
+        localStorage.setItem("cyberMazeBest",best);
+        document.getElementById("bestHome").textContent = best;
     }
 
-    document.getElementById("dialogTitle").textContent =
-        "🏆 MISI BERHASIL!";
-    document.getElementById("dialogText").textContent =
-        `Hebat! Kamu menyelesaikan semua level. Skor: ${score}. Waktu: ${seconds} detik.`;
-
-    show("dialog");
-
-    const button = document.querySelector("#dialog button");
-    button.textContent = "MAIN LAGI";
-    button.onclick = startGame;
-}
-
-function showInstructions() {
-    document.getElementById("dialogTitle").textContent =
-        "📘 Cara Bermain";
-    document.getElementById("dialogText").textContent =
-        "1. Gunakan tombol arah untuk bergerak. " +
-        "2. Temukan kunci berwarna kuning. " +
-        "3. Hindari jebakan. " +
-        "4. Cari pintu keluar. " +
-        "5. Selesaikan semua level untuk menang.";
-
-    const button = document.querySelector("#dialog button");
-    button.textContent = "KEMBALI";
-    button.onclick = closeDialog;
-
-    show("dialog");
-}
-
-function showBestScore() {
-    document.getElementById("dialogTitle").textContent =
-        "🏆 Skor Tertinggi";
-    document.getElementById("dialogText").textContent =
-        "Skor terbaik kamu adalah " + best + " poin.";
-
-    const button = document.querySelector("#dialog button");
-    button.textContent = "KEMBALI";
-    button.onclick = closeDialog;
-
-    show("dialog");
-}
-
-function closeDialog() {
-    if (paused && playing) {
-        paused = false;
-        show("game");
-    } else {
-        show("home");
-    }
+    modal(
+        won ? "🏆" : "💥",
+        title,
+        (won ? "Misi berhasil diselesaikan!" : "Misi gagal.") +
+        " Skor akhir: " + score +
+        ". Skor tertinggi: " + best + ".",
+        "MAIN LAGI",
+        startGame
+    );
 }
 
 function backHome() {
     playing = false;
     paused = false;
-    clearInterval(timer);
-    show("home");
+    clearInterval(timerId);
+    cancelAnimationFrame(animationId);
+
+    document.getElementById("overlay").classList.add("hidden");
+    document.getElementById("bestHome").textContent = best;
+    showScreen("home");
 }
 
-document.addEventListener("keydown", event => {
+document.addEventListener("keydown",event => {
     const directions = {
-        ArrowUp: [0,-1],
-        ArrowDown: [0,1],
-        ArrowLeft: [-1,0],
-        ArrowRight: [1,0],
-        w: [0,-1],
-        s: [0,1],
-        a: [-1,0],
-        d: [1,0]
+        ArrowUp:[0,-1],
+        ArrowDown:[0,1],
+        ArrowLeft:[-1,0],
+        ArrowRight:[1,0],
+        w:[0,-1],
+        s:[0,1],
+        a:[-1,0],
+        d:[1,0]
     };
 
     if (directions[event.key]) {
         event.preventDefault();
         move(...directions[event.key]);
+    }
+
+    if (event.key === "Escape" && playing && !paused) {
+        pauseGame();
     }
 });
 </script>
