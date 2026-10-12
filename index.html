@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cyber Maze</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #030b12;
+    color: white;
+    min-height: 100vh;
+    text-align: center;
+    overflow-x: hidden;
+}
+
+header {
+    padding: 24px 10px 12px;
+}
+
+h1 {
+    font-size: clamp(34px, 8vw, 52px);
+    color: #38ffd5;
+    text-shadow: 0 0 12px #00ffc8;
+    letter-spacing: 3px;
+}
+
+.subtitle {
+    color: #9bbec9;
+    margin-top: 10px;
+    font-size: 13px;
+}
+
+.panel {
+    width: min(92%, 420px);
+    margin: 15px auto;
+    padding: 20px;
+    border: 1px solid #00ffc8;
+    border-radius: 16px;
+    background: #071720;
+    box-shadow: 0 0 18px #00ffc822;
+}
+
+button {
+    cursor: pointer;
+    border: 1px solid #00ffd0;
+    border-radius: 9px;
+    background: #092a32;
+    color: #55ffe0;
+    font-weight: bold;
+    padding: 12px 18px;
+    transition: 0.2s;
+}
+
+button:active {
+    transform: scale(0.96);
+    background: #075044;
+}
+
+.menu button {
+    display: block;
+    width: 100%;
+    margin-top: 12px;
+    font-size: 15px;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.stats {
+    display: flex;
+    justify-content: space-around;
+    gap: 5px;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+    color: #54ffe0;
+    font-size: 13px;
+}
+
+#maze {
+    display: grid;
+    width: 100%;
+    aspect-ratio: 1;
+    border: 2px solid #00ffc8;
+    box-shadow: 0 0 18px #00ffc844;
+    background: #041018;
+}
+
+.cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+    min-height: 0;
+    font-size: clamp(9px, 3.5vw, 18px);
+}
+
+.wall {
+    background: #123b48;
+    box-shadow: inset 0 0 5px #00d9ff33;
+}
+
+.floor {
+    background: #06131c;
+}
+
+.player {
+    color: #ffffff;
+    background: #07534f;
+    text-shadow: 0 0 8px #00ffe1;
+}
+
+.key {
+    color: #ffe56b;
+    text-shadow: 0 0 8px #ffcf33;
+}
+
+.exit {
+    color: #51ff86;
+    text-shadow: 0 0 10px #00ff55;
+}
+
+.trap {
+    color: #ff658a;
+    text-shadow: 0 0 8px #ff285b;
+}
+
+.controls {
+    display: grid;
+    grid-template-columns: repeat(3, 58px);
+    justify-content: center;
+    gap: 8px;
+    margin: 18px 0 10px;
+}
+
+.controls button {
+    height: 48px;
+    padding: 0;
+    font-size: 20px;
+    touch-action: manipulation;
+}
+
+.empty {
+    visibility: hidden;
+}
+
+.message {
+    min-height: 22px;
+    margin: 12px 0;
+    color: #9fffe9;
+    font-size: 13px;
+}
+
+.small {
+    color: #87a8b5;
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+footer {
+    padding: 15px;
+    color: #648692;
+    font-size: 11px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>CYBER MAZE</h1>
+    <p class="subtitle">FIND THE EXIT • ESCAPE THE MAZE</p>
+</header>
+
+<!-- MENU UTAMA -->
+<section id="home" class="panel menu">
+    <h2>🚪 Misi Pelarian</h2>
+    <p class="small" style="margin-top:12px">
+        Temukan kunci, hindari jebakan, dan temukan pintu keluar
+        untuk menyelesaikan setiap level!
+    </p>
+
+    <button onclick="startGame()">▶ MULAI BERMAIN</button>
+    <button onclick="showInstructions()">ⓘ CARA BERMAIN</button>
+    <button onclick="showBestScore()">🏆 SKOR TERTINGGI</button>
+
+    <p class="small" style="margin-top:15px">
+        Siapkan strategi dan temukan jalan keluarnya!
+    </p>
+</section>
+
+<!-- AREA PERMAINAN -->
+<section id="game" class="panel hidden">
+    <div class="stats">
+        <span>⭐ Skor: <b id="score">0</b></span>
+        <span>🔑 <b id="keys">0</b>/1</span>
+        <span>⏱️ <b id="time">0</b> dtk</span>
+        <span>LEVEL <b id="level">1</b></span>
+    </div>
+
+    <div id="maze"></div>
+
+    <p id="message" class="message">
+        Cari kunci untuk membuka pintu!
+    </p>
+
+    <div class="controls">
+        <button class="empty"> </button>
+        <button onclick="move(0,-1)">▲</button>
+        <button class="empty"> </button>
+
+        <button onclick="move(-1,0)">◀</button>
+        <button onclick="move(0,1)">▼</button>
+        <button onclick="move(1,0)">▶</button>
+    </div>
+
+    <button onclick="pauseGame()">Ⅱ JEDA</button>
+    <button onclick="backHome()">⌂ MENU</button>
+
+    <p class="small" style="margin-top:12px">
+        Kamu juga bisa memakai tombol panah pada keyboard.
+    </p>
+</section>
+
+<!-- JENDELA INFORMASI -->
+<section id="dialog" class="panel hidden">
+    <h2 id="dialogTitle">Informasi</h2>
+    <p id="dialogText" class="small" style="margin:18px 0"></p>
+    <button onclick="closeDialog()">KEMBALI</button>
+</section>
+
+<footer>
+    CYBER MAZE © 2026 • HTML · CSS · JAVASCRIPT
+</footer>
+
+<script>
+const levels = [
+[
+"#########",
+"#P..#..E#",
+"#.#.#.#.#",
+"#.#...#.#",
+"#.###.#.#",
+"#...K...#",
+"###.#.#.#",
+"#.......#",
+"#########"
+],
+[
+"#########",
+"#P#.....#",
+"#.#.###.#",
+"#...#...#",
+"###.#.#.#",
+"#K..T...#",
+"#.#####.#",
+"#......E#",
+"#########"
+],
+[
+"#########",
+"#P......#",
+"#.#####.#",
+"#...T...#",
+"###.#.###",
+"#K..#...#",
+"#.###.#.#",
+"#......E#",
+"#########"
+]
+];
+
+let grid = [];
+let player = {x:1,y:1};
+let keyFound = false;
+let score = 0;
+let level = 0;
+let seconds = 0;
+let timer = null;
+let playing = false;
+let paused = false;
+let best = Number(localStorage.getItem("cyberMazeBest") || 0);
+
+function show(id) {
+    ["home","game","dialog"].forEach(name => {
+        document.getElementById(name).classList.add("hidden");
+    });
+    document.getElementById(id).classList.remove("hidden");
+}
+
+function startGame() {
+    clearInterval(timer);
+    score = 0;
+    level = 0;
+    seconds = 0;
+    playing = true;
+    paused = false;
+
+    loadLevel();
+
+    timer = setInterval(() => {
+        if (playing && !paused) {
+            seconds++;
+            document.getElementById("time").textContent = seconds;
+        }
+    }, 1000);
+}
+
+function loadLevel() {
+    grid = levels[level].map(row => row.split(""));
+    keyFound = false;
+
+    for (let y = 0; y < grid.length; y++) {
+        for (let x = 0; x < grid[y].length; x++) {
+            if (grid[y][x] === "P") {
+                player = {x,y};
+                grid[y][x] = ".";
+            }
+        }
+    }
+
+    show("game");
+    document.getElementById("level").textContent = level + 1;
+    document.getElementById("message").textContent =
+        "Cari kunci 🔑 untuk membuka pintu!";
+    render();
+    updateStats();
+}
+
+function render() {
+    const maze = document.getElementById("maze");
+    const rows = grid.length;
+    const cols = grid[0].length;
+
+    maze.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+    maze.innerHTML = "";
+
+    for (let y = 0; y < rows; y++) {
+        for (let x = 0; x < cols; x++) {
+            const cell = document.createElement("div");
+            const value = grid[y][x];
+
+            cell.className = "cell";
+
+            if (value === "#") {
+                cell.classList.add("wall");
+                cell.textContent = "";
+            } else {
+                cell.classList.add("floor");
+
+                if (x === player.x && y === player.y) {
+                    cell.classList.add("player");
+                    cell.textContent = "🤖";
+                } else if (value === "K") {
+                    cell.classList.add("key");
+                    cell.textContent = "🔑";
+                } else if (value === "E") {
+                    cell.classList.add("exit");
+                    cell.textContent = "🚪";
+                } else if (value === "T") {
+                    cell.classList.add("trap");
+                    cell.textContent = "⚠️";
+                }
+            }
+
+            maze.appendChild(cell);
+        }
+    }
+}
+
+function move(dx,dy) {
+    if (!playing || paused) return;
+
+    const nx = player.x + dx;
+    const ny = player.y + dy;
+
+    if (
+        ny < 0 || ny >= grid.length ||
+        nx < 0 || nx >= grid[ny].length
+    ) return;
+
+    const target = grid[ny][nx];
+
+    if (target === "#") return;
+
+    if (target === "E" && !keyFound) {
+        document.getElementById("message").textContent =
+            "🔒 Pintu terkunci! Cari kunci terlebih dahulu.";
+        return;
+    }
+
+    if (target === "K") {
+        keyFound = true;
+        score += 100;
+        document.getElementById("message").textContent =
+            "🔑 Kunci ditemukan! Sekarang cari pintu keluar.";
+    } else if (target === "T") {
+        score = Math.max(0, score - 20);
+        document.getElementById("message").textContent =
+            "⚠️ Terkena jebakan! Skor berkurang 20.";
+    } else {
+        score += 1;
+        document.getElementById("message").textContent =
+            "Terus cari jalan menuju pintu keluar!";
+    }
+
+    player.x = nx;
+    player.y = ny;
+
+    if (target === "E" && keyFound) {
+        score += 100;
+        updateStats();
+
+        if (level < levels.length - 1) {
+            level++;
+            document.getElementById("message").textContent =
+                "🎉 Level selesai! Bersiap ke level berikutnya.";
+            setTimeout(() => {
+                    if (playing && !paused) loadLevel();
+            }, 700);
+        } else {
+            winGame();
+        }
+        return;
+    }
+
+    updateStats();
+    render();
+}
+
+function updateStats() {
+    document.getElementById("score").textContent = score;
+    document.getElementById("keys").textContent = keyFound ? 1 : 0;
+    document.getElementById("level").textContent = level + 1;
+}
+
+function pauseGame() {
+    if (!playing) return;
+
+    paused = !paused;
+
+    document.getElementById("dialogTitle").textContent =
+        paused ? "⏸️ GAME DIJEDA" : "▶ PERMAINAN";
+    document.getElementById("dialogText").textContent =
+        paused ? "Permainan dihentikan sementara." :
+        "Permainan dilanjutkan.";
+
+    show(paused ? "dialog" : "game");
+}
+
+function winGame() {
+    playing = false;
+    clearInterval(timer);
+
+    if (score > best) {
+        best = score;
+        localStorage.setItem("cyberMazeBest", best);
+    }
+
+    document.getElementById("dialogTitle").textContent =
+        "🏆 MISI BERHASIL!";
+    document.getElementById("dialogText").textContent =
+        `Hebat! Kamu menyelesaikan semua level. Skor: ${score}. Waktu: ${seconds} detik.`;
+
+    show("dialog");
+
+    const button = document.querySelector("#dialog button");
+    button.textContent = "MAIN LAGI";
+    button.onclick = startGame;
+}
+
+function showInstructions() {
+    document.getElementById("dialogTitle").textContent =
+        "📘 Cara Bermain";
+    document.getElementById("dialogText").textContent =
+        "1. Gunakan tombol arah untuk bergerak. " +
+        "2. Temukan kunci berwarna kuning. " +
+        "3. Hindari jebakan. " +
+        "4. Cari pintu keluar. " +
+        "5. Selesaikan semua level untuk menang.";
+
+    const button = document.querySelector("#dialog button");
+    button.textContent = "KEMBALI";
+    button.onclick = closeDialog;
+
+    show("dialog");
+}
+
+function showBestScore() {
+    document.getElementById("dialogTitle").textContent =
+        "🏆 Skor Tertinggi";
+    document.getElementById("dialogText").textContent =
+        "Skor terbaik kamu adalah " + best + " poin.";
+
+    const button = document.querySelector("#dialog button");
+    button.textContent = "KEMBALI";
+    button.onclick = closeDialog;
+
+    show("dialog");
+}
+
+function closeDialog() {
+    if (paused && playing) {
+        paused = false;
+        show("game");
+    } else {
+        show("home");
+    }
+}
+
+function backHome() {
+    playing = false;
+    paused = false;
+    clearInterval(timer);
+    show("home");
+}
+
+document.addEventListener("keydown", event => {
+    const directions = {
+        ArrowUp: [0,-1],
+        ArrowDown: [0,1],
+        ArrowLeft: [-1,0],
+        ArrowRight: [1,0],
+        w: [0,-1],
+        s: [0,1],
+        a: [-1,0],
+        d: [1,0]
+    };
+
+    if (directions[event.key]) {
+        event.preventDefault();
+        move(...directions[event.key]);
+    }
+});
+</script>
+
+</body>
+</html>
